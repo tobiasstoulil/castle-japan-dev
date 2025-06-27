@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&family=Outfit:wght@100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rajdhani:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  touch-action: none;
+  -webkit-overflow-scrolling: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior: none !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body.loading {
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
+.webgl {
+  z-index: 0;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  outline: none;
+}
+
+.char {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+
+.line {
+  margin-top: 0.1rem;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.line span {
+  position: relative;
+  display: inline-block;
+  transform: translateY(-100%);
+  will-change: transform;
+}
+
+.char span {
+  position: relative;
+  display: inline-block;
+  transform: translateY(-100%);
+  will-change: transform;
+}
+
+.progress .char {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  margin-bottom: -1.2825rem;
+}
+
+.progress .char span {
+  position: relative;
+  display: inline-block;
+  transform: translateY(0%);
+  will-change: transform;
+}
