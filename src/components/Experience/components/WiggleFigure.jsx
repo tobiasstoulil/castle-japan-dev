@@ -300,7 +300,7 @@ const WiggleFigure = () => {
     <RigidBody ref={rb} colliders={false} lockRotations>
       <group ref={container}>
         <group ref={character}>
-          <group scale={2} position={[0, -1.75, 0]}>
+          <group scale={2} position={[0, -3, 0]}>
             <primitive object={scene} />
           </group>
         </group>

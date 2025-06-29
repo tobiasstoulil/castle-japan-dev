@@ -8,9 +8,6 @@ import gsap from "gsap";
 import jcastleVertexShader from "../shaders/jcastle/vertex.glsl";
 import jcastleFragmentShader from "../shaders/jcastle/fragment.glsl";
 
-import groundVertexShader from "../shaders/ground/vertex.glsl";
-import groundFragmentShader from "../shaders/ground/fragment.glsl";
-
 import windowVertexShader from "../shaders/window/vertex.glsl";
 import windowFragmentShader from "../shaders/window/fragment.glsl";
 
@@ -21,7 +18,7 @@ const Model = () => {
   noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
   noiseTexture.encoding = THREE.NoColorSpace;
 
-  const vornoiTexture = useTexture("/textures/vornoi.png");
+  const vornoiTexture = useTexture("/textures/voronoi.png");
   vornoiTexture.wrapS = vornoiTexture.wrapT = THREE.RepeatWrapping;
   vornoiTexture.encoding = THREE.NoColorSpace;
 
@@ -43,16 +40,6 @@ const Model = () => {
     []
   );
 
-  // const emissiveMaterial = useMemo(
-  //   () =>
-  //     new THREE.MeshStandardMaterial({
-  //       color: 0xffffff,
-  //       emissive: 0xffffff,
-  //       emissiveIntensity: 0.5,
-  //     }),
-  //   []
-  // );
-
   const windowMaterial = useMemo(
     () =>
       new THREE.ShaderMaterial({
@@ -65,36 +52,10 @@ const Model = () => {
       }),
     []
   );
-  const bakeGroundTexture = useTexture("/textures/bakeGround.jpg");
-  bakeGroundTexture.flipY = false;
-  bakeGroundTexture.encoding = THREE.sRGBEncoding;
-
-  const groundMaterial = useMemo(
-    () =>
-      new THREE.ShaderMaterial({
-        uniforms: {
-          uCharPosition: new THREE.Uniform(new THREE.Vector3(0, 0, 0)),
-          uTexture: new THREE.Uniform(bakeGroundTexture),
-          uNoiseTexture: new THREE.Uniform(noiseTexture),
-          uVornoiTexture: new THREE.Uniform(vornoiTexture),
-        },
-        vertexShader: groundVertexShader,
-        fragmentShader: groundFragmentShader,
-        vertexColors: true,
-      }),
-    []
-  );
 
   useEffect(() => {
     gltf.scene.traverse((child) => {
       // console.log(child.name);
-      if (child.name.includes("cameraPosition")) {
-        // camera.position.set(
-        //   child.position.x,
-        //   child.position.y,
-        //   child.position.z
-        // );
-      }
 
       if (child.material) {
         child.material.dispose();
@@ -102,12 +63,9 @@ const Model = () => {
       }
       //
       if (child.isMesh) {
+        // console.log(child.name);
         if (child.name.includes("custom")) {
           child.material = windowMaterial;
-        } else if (child.name.includes("Ground")) {
-          child.material = groundMaterial;
-
-          // console.log(child);
         } else {
           child.material = bakedNeutralMaterial;
         }
@@ -116,12 +74,6 @@ const Model = () => {
 
     return () => {};
   }, [gltf]);
-
-  useFrame((_, delta) => {
-    const charPosition = useStats.getState().charPosition;
-
-    groundMaterial.uniforms.uCharPosition.value = charPosition;
-  });
 
   return (
     <>

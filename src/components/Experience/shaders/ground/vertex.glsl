@@ -2,7 +2,7 @@
 varying vec2 vUv;
 varying vec3 vWorldPosition;
 
-varying vec3 vColor;
+// varying vec3 vColor;
 
 
 void main()
@@ -15,7 +15,7 @@ void main()
     gl_Position = projectedPosition;
 
 
-    vColor = color.xyz;
+    // vColor = color.xyz;
     vUv = uv;    
     vWorldPosition = modelPosition.xyz;
 }

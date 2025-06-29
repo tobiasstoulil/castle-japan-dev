@@ -21,6 +21,10 @@ import WiggleFigure from "./components/WiggleFigure";
 import PropsModel from "./components/PropsModel";
 import { Physics } from "@react-three/rapier";
 import Colliders from "./components/Colliders";
+import WaterCollider from "./components/WaterCollider";
+import WaterProps from "./components/WaterProps";
+import Leaves from "./components/Leaves";
+import { Leva } from "leva";
 
 // const keyboardMap = [
 //   { name: "forward", keys: ["KeyW", "ArrowUp"] },
@@ -49,7 +53,8 @@ export default function Scene() {
 
     lerpedPosition.current.lerp(charPosition, 1 - Math.pow(0.175, delta));
 
-    const fac = 0.33;
+    // const fac = 0.33;
+    const fac = 0.33; //18
 
     cameraRef.current.position.set(
       cameraPosition.x + lerpedPosition.current.x * fac,
@@ -85,12 +90,17 @@ export default function Scene() {
         near={0.1}
         far={1000}
         position={[cameraPosition.x, cameraPosition.y, cameraPosition.z]}
-        zoom={24.5}
+        // zoom={24.5}
+        zoom={20}
       />
       <group position={[0, 0, 0]}>
         <Model />
+        <Leaves />
         <PropsModel />
+        <WaterProps />
       </group>
+
+      <Leva hidden />
 
       <KeyboardControls
         map={[
@@ -103,7 +113,7 @@ export default function Scene() {
         ]}
       >
         <Physics debug={false}>
-          <group position={[0, 5, 15]}>
+          <group position={[0, 5, 0]}>
             <WiggleFigure />
           </group>
           <group position={[0, 0, 0]}>
@@ -141,7 +151,7 @@ export default function Scene() {
         /> */}
       {/* </EffectComposer> */}
 
-      <Environment preset="sunset" />
+      {/* <Environment preset="sunset" /> */}
 
       <color attach="background" args={["#000000"]} />
       {/* <PivotControls scale={10} /> */}

@@ -5,8 +5,8 @@ import { useFrame, useThree } from "@react-three/fiber";
 import useStats from "../../../stores/useStats";
 import gsap from "gsap";
 
-import jcastleVertexShader from "../shaders/jcastle/vertex.glsl";
-import jcastleFragmentShader from "../shaders/jcastle/fragment.glsl";
+import castlePropsVertexShader from "../shaders/castleProps/vertex.glsl";
+import castlePropsFragmentShader from "../shaders/castleProps/fragment.glsl";
 
 const PropsModel = () => {
   const gltf = useGLTF("/models/japan-castle-props.glb");
@@ -22,8 +22,8 @@ const PropsModel = () => {
           uNeutralTexture: new THREE.Uniform(bakedPropsTexture),
         },
         transparent: true,
-        vertexShader: jcastleVertexShader,
-        fragmentShader: jcastleFragmentShader,
+        vertexShader: castlePropsVertexShader,
+        fragmentShader: castlePropsFragmentShader,
       }),
     []
   );
