@@ -13,7 +13,7 @@ const App = () => {
 
   return (
     <>
-      {/* <Loader /> */}
+      <Loader />
 
       <div className="fixed inset-0 h-[100svh] w-full overflow-hidden">
         {/* <Navbar /> */}

@@ -136,8 +136,8 @@ const WiggleFigure = () => {
   const { WALK_SPEED, RUN_SPEED, ROTATION_SPEED } = useControls(
     "Character Control",
     {
-      WALK_SPEED: { value: 8, min: 0.1, max: 10, step: 0.1 },
-      RUN_SPEED: { value: 16, min: 0.2, max: 20, step: 0.1 },
+      WALK_SPEED: { value: 5, min: 0.1, max: 10, step: 0.1 },
+      RUN_SPEED: { value: 9, min: 0.2, max: 20, step: 0.1 },
       ROTATION_SPEED: {
         value: degToRad(3.5),
         min: degToRad(0.1),
@@ -189,8 +189,8 @@ const WiggleFigure = () => {
     nodes.RootBone.traverse((bone) => {
       if (bone.isBone && bone !== nodes.RootBone) {
         const wiggleBone = new WiggleBone(bone, {
-          stiffness: 500,
-          damping: 50,
+          stiffness: 350,
+          damping: 20,
         });
         wiggleBones.current.push(wiggleBone);
       }
@@ -202,6 +202,8 @@ const WiggleFigure = () => {
       });
     };
   }, [nodes]);
+
+  const isJumped = useRef(false);
 
   useFrame((state, delta) => {
     // console.log(rb.current);
@@ -261,16 +263,18 @@ const WiggleFigure = () => {
         vel.z =
           Math.cos(rotationTarget.current + characterRotationTarget.current) *
           speed;
-
-        if (speed === RUN_SPEED) {
-          setAnimation("run");
-        } else {
-          setAnimation("walk");
-        }
       } else {
-        setAnimation("idle");
         vel.x = 0;
         vel.z = 0;
+      }
+
+      if (get().jump) {
+        if (!isJumped.current) {
+          isJumped.current = true;
+
+          vel.y = 8;
+          // console.log("jump");
+        }
       }
 
       // character.current.rotation.y = lerpAngle(
@@ -285,7 +289,11 @@ const WiggleFigure = () => {
     const worldPosition = new THREE.Vector3();
     container.current.getWorldPosition(worldPosition);
     worldPosition.y -= 2;
-    // console.log("World Position:", worldPosition);
+    // console.log("World Position:", worldPosition.y);
+
+    if (worldPosition.y < 1) {
+      isJumped.current = false;
+    }
 
     setCharPosition(worldPosition.clone());
 
@@ -300,7 +308,7 @@ const WiggleFigure = () => {
     <RigidBody ref={rb} colliders={false} lockRotations>
       <group ref={container}>
         <group ref={character}>
-          <group scale={2} position={[0, -3, 0]}>
+          <group scale={1.825} position={[0, -2.3, 0]}>
             <primitive object={scene} />
           </group>
         </group>

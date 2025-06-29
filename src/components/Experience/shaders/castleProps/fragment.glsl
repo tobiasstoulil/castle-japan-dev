@@ -38,7 +38,7 @@ void main()
 
 
     vec3 neutralCol = texture2D(uNeutralTexture, vUv).rgb;
-    neutralCol *= 1.0875;
+    neutralCol *= 1.1;
 
 
     // gl_FragColor = vec4(vec3(neutralCol ), 1.- facing);

@@ -26,8 +26,8 @@ void main()
 
     // vec3 baseCol = vec3(0.8);
 
-    vec3 finalCol = mix(col, col * 5., dist);
-    finalCol *= 1.15;
+    vec3 finalCol = mix(col, col * 20., dist);
+    finalCol *= 1.1825;
 
     gl_FragColor = vec4(vec3(finalCol), 1.0);
 

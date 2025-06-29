@@ -4,36 +4,25 @@ import Model from "./components/Model";
 import * as THREE from "three";
 import { useEffect, useMemo, useRef } from "react";
 import {
-  Cloud,
   Environment,
   KeyboardControls,
   OrbitControls,
   OrthographicCamera,
   PerspectiveCamera,
   PivotControls,
+  useTexture,
 } from "@react-three/drei";
 import useStats from "../../stores/useStats";
 
-import gsap from "gsap";
-import { useScreenCursor } from "./utils/useScreenCursor";
-import { Bloom, EffectComposer, SSAO } from "@react-three/postprocessing";
 import WiggleFigure from "./components/WiggleFigure";
 import PropsModel from "./components/PropsModel";
 import { Physics } from "@react-three/rapier";
 import Colliders from "./components/Colliders";
-import WaterCollider from "./components/WaterCollider";
 import WaterProps from "./components/WaterProps";
 import Leaves from "./components/Leaves";
-import { Leva } from "leva";
+import { Leva, useControls } from "leva";
 
-// const keyboardMap = [
-//   { name: "forward", keys: ["KeyW", "ArrowUp"] },
-//   { name: "backward", keys: ["KeyS", "ArrowDown"] },
-//   { name: "leftward", keys: ["KeyA", "ArrowLeft"] },
-//   { name: "rightward", keys: ["KeyD", "ArrowRight"] },
-//   { name: "run", keys: ["Shift"] },
-//   { name: "jump", keys: ["Space"] },
-// ]
+import gsap from "gsap";
 
 export default function Scene() {
   console.log("scene r");
@@ -54,7 +43,7 @@ export default function Scene() {
     lerpedPosition.current.lerp(charPosition, 1 - Math.pow(0.175, delta));
 
     // const fac = 0.33;
-    const fac = 0.33; //18
+    const fac = 0.2; //18
 
     cameraRef.current.position.set(
       cameraPosition.x + lerpedPosition.current.x * fac,
@@ -64,26 +53,106 @@ export default function Scene() {
 
     cameraRef.current.lookAt(
       lerpedPosition.current.x * fac,
-      (lerpedPosition.current.y + 18) * fac,
+      (lerpedPosition.current.y + 32) * fac,
       lerpedPosition.current.z * fac
     );
   });
 
+  const { progress } = useControls("Pr", {
+    progress: {
+      value: 0,
+      min: 0,
+      max: 1,
+      step: 0.01,
+      onChange: (v) => {
+        // console.log(shaderTransitionMaterial);
+
+        shaderTransitionMaterial.uniforms.uProgress.value = v;
+      },
+    },
+  });
+
+  const shaderTransitionRef = useRef();
+
+  const noiseTexture = useTexture("/textures/clouds.jpg");
+  noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+  noiseTexture.encoding = THREE.NoColorSpace;
+
+  const shaderTransitionMaterial = useMemo(() => {
+    const shaderMaterial = new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+     
+          gl_Position = vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform sampler2D uNoiseTexture;
+        uniform float uProgress;
+        uniform float uAspect;
+
+        varying vec2 vUv;
+
+        void main() {
+          vec2 uv = vUv;
+          uv -= 0.5;
+          uv.x *= uAspect;
+          uv += 0.5;
+
+          float time = uTime * 0.025;
+
+          float noise = texture2D(uNoiseTexture, uv).r;
+          noise = pow(noise * 3., 2.);
+
+          float fac = uv.y + 1.;
+          fac = pow(fac, 0.5);
+          fac = fac - uProgress * (1.44);
+          fac = fac + fac * noise;
+
+          gl_FragColor = vec4(vec3(1.), fac);
+        }
+      `,
+      uniforms: {
+        uTime: new THREE.Uniform(0),
+        uProgress: new THREE.Uniform(0),
+        uAspect: new THREE.Uniform(window.innerWidth / window.innerHeight),
+        uNoiseTexture: new THREE.Uniform(noiseTexture),
+      },
+      depthTest: false,
+      depthWrite: false,
+      transparent: true,
+    });
+
+    return shaderMaterial;
+  }, [noiseTexture]);
+
+  useEffect(() => {
+    shaderTransitionRef.current.material = shaderTransitionMaterial;
+
+    const unsubscribe = useStats.subscribe(
+      (state) => state.scopeAnim,
+      (value, prevValue) => {
+        // console.log(value);
+        if (value === true) {
+          // console.log("animate");
+          gsap.to(shaderTransitionMaterial.uniforms.uProgress, {
+            value: 1,
+            duration: 6,
+            delay: 0.25,
+            ease: "power3.out",
+          });
+        }
+      }
+    );
+
+    return () => unsubscribe();
+  }, [shaderTransitionMaterial]);
+
   return (
     <>
-      {/* <PerspectiveCamera
-        ref={cameraRef}
-        makeDefault
-        near={0.1}
-        far={1000}
-        rotation={[
-          THREE.MathUtils.degToRad(60 - 90),
-          THREE.MathUtils.degToRad(45),
-          0,
-          "YXZ",
-        ]}
-        // position={[cameraPosition.x, cameraPosition.y, cameraPosition.z]}
-      /> */}
       <OrthographicCamera
         ref={cameraRef}
         makeDefault
@@ -122,34 +191,16 @@ export default function Scene() {
         </Physics>
       </KeyboardControls>
 
+      <mesh ref={shaderTransitionRef} renderOrder={1}>
+        <planeGeometry args={[2, 2]} />
+      </mesh>
+
       {/* <mesh position={[0, 0, 0]}>
         <sphereGeometry args={[2, 32, 32]} />
         <meshNormalMaterial />
       </mesh> */}
 
       {/* <OrbitControls /> */}
-
-      {/* <EffectComposer> */}
-      {/* <SSAO
-          samples={20}
-          rings={8}
-          distanceThreshold={1}
-          distanceFalloff={2}
-          rangeThreshold={1}
-          rangeFalloff={0}
-          radius={5}
-          luminanceInfluence={0.5}
-          intensity={40}
-          scale={2}
-          bias={0.125}
-          color="black"
-        /> */}
-      {/* <Bloom
-          luminanceThreshold={1}
-          luminanceSmoothing={0.5}
-          intensity={0.5}
-        /> */}
-      {/* </EffectComposer> */}
 
       {/* <Environment preset="sunset" /> */}
 

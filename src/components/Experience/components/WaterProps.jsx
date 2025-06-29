@@ -49,6 +49,7 @@ const WaterProps = () => {
         },
         vertexShader: waterVertexShader,
         fragmentShader: waterFragmentShader,
+        transparent: true,
       }),
     []
   );
