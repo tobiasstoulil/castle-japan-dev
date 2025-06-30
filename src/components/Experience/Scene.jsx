@@ -23,6 +23,7 @@ import Leaves from "./components/Leaves";
 import { Leva, useControls } from "leva";
 
 import gsap from "gsap";
+import Hints from "./components/Hints";
 
 export default function Scene() {
   console.log("scene r");
@@ -167,6 +168,7 @@ export default function Scene() {
         <Leaves />
         <PropsModel />
         <WaterProps />
+        <Hints />
       </group>
 
       <Leva hidden />

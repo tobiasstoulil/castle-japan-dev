@@ -93,11 +93,11 @@
 //   });
 
 import { CapsuleCollider, RigidBody } from "@react-three/rapier";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
-import { useKeyboardControls } from "@react-three/drei";
+import { useKeyboardControls, useTexture } from "@react-three/drei";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { useGLTF } from "@react-three/drei";
 import useStats from "../../../stores/useStats";
@@ -131,13 +131,19 @@ const lerpAngle = (start, end, t) => {
 const WiggleFigure = () => {
   const { nodes, scene } = useGLTF("/models/wiggle-rig.glb");
 
+  const matcapTexture = useTexture("/textures/m3.png");
+
+  const material = new THREE.MeshMatcapMaterial({
+    matcap: matcapTexture,
+  });
+
   const setCharPosition = useStats((state) => state.setCharPosition);
 
   const { WALK_SPEED, RUN_SPEED, ROTATION_SPEED } = useControls(
     "Character Control",
     {
-      WALK_SPEED: { value: 5, min: 0.1, max: 10, step: 0.1 },
-      RUN_SPEED: { value: 9, min: 0.2, max: 20, step: 0.1 },
+      WALK_SPEED: { value: 4, min: 0.1, max: 10, step: 0.1 },
+      RUN_SPEED: { value: 7, min: 0.2, max: 20, step: 0.1 },
       ROTATION_SPEED: {
         value: degToRad(3.5),
         min: degToRad(0.1),
@@ -151,8 +157,6 @@ const WiggleFigure = () => {
   const container = useRef();
   const character = useRef();
   const wiggleBones = useRef([]);
-
-  const [animation, setAnimation] = useState("idle");
 
   const rotationTarget = useRef(0);
   const characterRotationTarget = useRef(0);
@@ -185,6 +189,15 @@ const WiggleFigure = () => {
   useEffect(() => {
     wiggleBones.current.length = 0;
 
+    scene.traverse((child) => {
+      // console.log(child.name);
+      if (child.isMesh) {
+        child.material.dispose();
+
+        child.material = material;
+      }
+    });
+
     // console.log(nodes);
     nodes.RootBone.traverse((bone) => {
       if (bone.isBone && bone !== nodes.RootBone) {
@@ -201,7 +214,7 @@ const WiggleFigure = () => {
         wiggleBone.dispose();
       });
     };
-  }, [nodes]);
+  }, [nodes, material]);
 
   const isJumped = useRef(false);
 
@@ -310,6 +323,7 @@ const WiggleFigure = () => {
         <group ref={character}>
           <group scale={1.825} position={[0, -2.3, 0]}>
             <primitive object={scene} />
+            {/* <mesh ref={suzzaneRef} /> */}
           </group>
         </group>
       </group>

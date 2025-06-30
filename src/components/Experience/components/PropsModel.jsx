@@ -11,7 +11,7 @@ import castlePropsFragmentShader from "../shaders/castleProps/fragment.glsl";
 const PropsModel = () => {
   const gltf = useGLTF("/models/japan-castle-props.glb");
 
-  const bakedPropsTexture = useTexture("/textures/bakeProps.jpg");
+  const bakedPropsTexture = useTexture("/textures/bakeProps1.jpg");
   bakedPropsTexture.flipY = false;
   bakedPropsTexture.encoding = THREE.sRGBEncoding;
 

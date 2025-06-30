@@ -134,9 +134,9 @@ const Leaves = () => {
   
             float cloudAlpha = texture2D(uCloudTexture, vUv * 5. - time).r;
             cloudAlpha = pow(cloudAlpha, 2.);
-            cloudAlpha *= 0.8;
+            cloudAlpha *= 0.775;
   
-            gl_FragColor = vec4(vec3(2.), cloudAlpha);
+            gl_FragColor = vec4(vec3(1.), cloudAlpha);
           }
         `,
       uniforms: {
