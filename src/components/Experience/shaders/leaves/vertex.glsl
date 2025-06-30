@@ -11,9 +11,9 @@ void main()
     vec3 newPos = position;
 
     if(uTime != 0.) {
-        time = uTime * 0.85;
-        newPos.z += sin(uv.x * position.x * 0.5 + time * 1.25) * 0.05;
-        newPos.x += sin(uv.x * position.x * 0.75 + time * 2.) * 0.075;
+        time = uTime * 0.7;
+        newPos.z += sin(uv.x * position.x * 0.5 + time * 1.25) * 0.075;
+        newPos.x += sin(uv.x * position.x * 0.75 + time * 2.) * 0.1;
     }
 
 

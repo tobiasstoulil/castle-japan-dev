@@ -27,7 +27,7 @@ const Index = () => {
     gsap.to(sideLoaderRef.current, {
       y: 0,
       ease: "hop",
-      duration: 5,
+      duration: 6,
     });
 
     if (progress === 100) {
@@ -35,9 +35,10 @@ const Index = () => {
         opacity: 0,
         ease: "hop",
         duration: 1,
-        delay: 6,
+        delay: 8,
         onComplete: () => {
           handleScopeAnim();
+          loaderRef.current.remove();
         },
       });
     }
@@ -82,63 +83,35 @@ const Index = () => {
   };
 
   useEffect(() => {
-    splitTextElements(".paragraph p", "lines");
-
     const tl = gsap.timeline({
       defaults: { ease: "hop" },
     });
 
-    // tl.delay(4);
-
-    // tl.to(
-    //   ".paragraph .line span",
-    //   {
-    //     y: 0,
-    //     duration: 1.5,
-    //     stagger: 0.1,
-    //   },
-    //   0.5
-    // );
-
     tl.to(
-      ".label p",
+      ".paragraph",
       {
         opacity: 1,
         duration: 1,
       },
-      1.25
+      0.75
     );
   }, []);
 
   return (
     <div
       ref={loaderRef}
-      className="relative z-10 inset-0 h-[100svh] w-full flex justify-center items-center bg-white"
+      className="fixed z-10 inset-0 h-[100svh] w-full flex justify-center items-center bg-white"
     >
       <div className="h-full w-full flex flex-col justify-center items-center font-main !font-[500]">
-        <div className="relative paragraph w-[625px]">
+        <div
+          style={{ willChange: "opacity", opacity: 0 }}
+          className="relative paragraph w-[625px]"
+        >
           <p className="text-black text-lg leading-[1.15]">
             Welcome to Castle Color Valley where colors are quiet. Even the king
             sleeps, but his queen, Suzzane? Never. She is a color hero. She
             adores colors. Help her before the colors might vanish forever. Good
             luck, color hero.
-          </p>
-        </div>
-
-        <div className="label absolute left-1/2 md:left-[7.375rem] xl:left-1/2 -translate-x-1/2 -bottom-0.5 mb-6 sm:mb-6 h-full flex flex-col items-start justify-end font-main ">
-          <p
-            style={{ opacity: 0 }}
-            className="select-none pointer-events-auto text-[0.875rem] sm:text-[1rem] !font-[500] normal-case"
-          >
-            Made by
-            <span
-              onClick={() => {
-                window.location.href = "https://x.com/tobias_stoulil";
-              }}
-              className="hover:underline select-none cursor-pointer ml-1 text-[0.875rem] sm:text-[1rem] !font-[400] normal-case"
-            >
-              Tobias Stoulil
-            </span>
           </p>
         </div>
       </div>

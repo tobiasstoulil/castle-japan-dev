@@ -189,8 +189,8 @@ const WiggleFigure = () => {
     nodes.RootBone.traverse((bone) => {
       if (bone.isBone && bone !== nodes.RootBone) {
         const wiggleBone = new WiggleBone(bone, {
-          stiffness: 350,
-          damping: 20,
+          stiffness: 400,
+          damping: 25,
         });
         wiggleBones.current.push(wiggleBone);
       }
