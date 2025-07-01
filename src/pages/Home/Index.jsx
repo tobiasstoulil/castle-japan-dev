@@ -86,7 +86,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="relative z-0 inset-0 h-[100svh] w-full flex justify-center items-center bg-transparent">
+    <div className="relative pointer-events-none z-0 inset-0 h-[100svh] w-full flex justify-center items-center bg-transparent">
       <p
         style={{ opacity: 0 }}
         className="label z-[1] absolute top-[40px] right-[2.25rem] pointer-events-auto text-[#3d3d3d] text-[0.875rem] !font-[500] normal-case"
@@ -111,7 +111,7 @@ const HomePage = () => {
         />
       </div>
 
-      <div className="absolute pl-[2.25rem] h-[150px] pr-[2.25rem] bottom-6 w-full flex flex-row justify-between items-center font-main">
+      <div className="absolute pl-[1.5rem] sm:pl-[2.25rem] h-[150px] pr-[1.5rem] sm:pr-[2.25rem] bottom-6 w-full flex flex-row justify-between items-center font-main">
         <div className="counter h-full flex items-end">
           <p
             ref={counterRef}
@@ -122,11 +122,11 @@ const HomePage = () => {
           </p>
         </div>
 
-        <div className="message w-[320px] h-full flex flex-col items-start justify-end font-main">
+        <div className="message w-[260px] md:w-[320px] h-full flex flex-col items-start justify-end font-main">
           <p
             style={{ opacity: 0 }}
-            className="pointer-events-auto text-[0.875rem] sm:text-[1rem] !font-[300] normal-case
-        text-[#969696] text-lg leading-[1.375] tracking-[-0.02em]
+            className="pointer-events-auto !font-[300] normal-case
+        text-[#969696] text-[0.875rem] sm:text-[1rem] leading-[1.375] tracking-[-0.02em]
         "
           >
             Use the{" "}

@@ -80,7 +80,7 @@ void main()
     // finalekNoise *= 2.;
 
 
-    gl_FragColor = vec4(vec3(finalekNoise * 1.525), pow(finalekNoise * a, 1.1));
+    gl_FragColor = vec4(vec3(finalekNoise * 1.6), pow(finalekNoise * a, 1.1));
 
     #include <tonemapping_fragment>
     #include <colorspace_fragment>    

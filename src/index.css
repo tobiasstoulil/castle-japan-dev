@@ -45,7 +45,7 @@ body.loading {
 }
 
 .webgl {
-  z-index: 0;
+  z-index: 1;
   position: fixed !important;
   top: 0;
   left: 0;

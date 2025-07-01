@@ -44,7 +44,20 @@ export default function Scene() {
     lerpedPosition.current.lerp(charPosition, 1 - Math.pow(0.175, delta));
 
     // const fac = 0.33;
-    const fac = 0.2; //18
+    let fac; //18
+    let targetY;
+
+    if (window.innerWidth < 1280) {
+      fac = 0.4;
+      targetY = 24;
+      if (window.innerWidth < 768) {
+        fac = 0.6;
+        targetY = 16;
+      }
+    } else {
+      fac = 0.2;
+      targetY = 32;
+    }
 
     cameraRef.current.position.set(
       cameraPosition.x + lerpedPosition.current.x * fac,
@@ -54,7 +67,7 @@ export default function Scene() {
 
     cameraRef.current.lookAt(
       lerpedPosition.current.x * fac,
-      (lerpedPosition.current.y + 32) * fac,
+      (lerpedPosition.current.y + targetY) * fac,
       lerpedPosition.current.z * fac
     );
   });
@@ -151,14 +164,14 @@ export default function Scene() {
 
     const resize = () => {
       // console.log("resize", window.innerWidth);
-      if (window.innerWidth < 1080) {
+      if (window.innerWidth < 1280) {
         cameraRef.current.zoom = 14;
 
         if (window.innerWidth < 768) {
           cameraRef.current.zoom = 12;
         }
       } else {
-        cameraRef.current.zoom = 20;
+        cameraRef.current.zoom = 19;
       }
       cameraRef.current.updateProjectionMatrix();
     };
@@ -181,7 +194,7 @@ export default function Scene() {
         far={1000}
         position={[cameraPosition.x, cameraPosition.y, cameraPosition.z]}
         // zoom={24.5}
-        zoom={20}
+        zoom={18}
       />
       <group position={[0, 0, 0]}>
         <Model />
@@ -195,10 +208,10 @@ export default function Scene() {
 
       <KeyboardControls
         map={[
-          { name: "forward", keys: ["ArrowUp", "w", "W"] },
-          { name: "backward", keys: ["ArrowDown", "s", "S"] },
-          { name: "leftward", keys: ["ArrowLeft", "a", "A"] },
-          { name: "rightward", keys: ["ArrowRight", "d", "D"] },
+          { name: "forward", keys: ["ArrowUp", "KeyW"] },
+          { name: "backward", keys: ["ArrowDown", "KeyS"] },
+          { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
+          { name: "rightward", keys: ["ArrowRight", "KeyD"] },
           { name: "jump", keys: ["Space"] },
           { name: "run", keys: ["ShiftLeft", "ShiftRight"] },
         ]}
@@ -226,7 +239,7 @@ export default function Scene() {
 
       {/* <Environment preset="sunset" /> */}
 
-      <color attach="background" args={["#000000"]} />
+      <color attach="background" args={["#ffffff"]} />
       {/* <PivotControls scale={10} /> */}
     </>
   );

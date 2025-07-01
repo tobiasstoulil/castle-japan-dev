@@ -75,28 +75,28 @@ const WiggleFigure = () => {
     matcap: matcapTexture,
   });
 
-  // useEffect(() => {
-  //   const onMouseDown = (e) => {
-  //     isClicking.current = true;
-  //   };
+  useEffect(() => {
+    const onMouseDown = (e) => {
+      isClicking.current = true;
+    };
 
-  //   const onMouseUp = (e) => {
-  //     isClicking.current = false;
-  //   };
+    const onMouseUp = (e) => {
+      isClicking.current = false;
+    };
 
-  //   document.addEventListener("mousedown", onMouseDown);
-  //   document.addEventListener("mouseup", onMouseUp);
+    // document.addEventListener("mousedown", onMouseDown);
+    // document.addEventListener("mouseup", onMouseUp);
 
-  //   document.addEventListener("touchstart", onMouseDown);
-  //   document.addEventListener("touchend", onMouseUp);
+    document.addEventListener("touchstart", onMouseDown);
+    document.addEventListener("touchend", onMouseUp);
 
-  //   return () => {
-  //     document.removeEventListener("mousedown", onMouseDown);
-  //     document.removeEventListener("mouseup", onMouseUp);
-  //     document.addEventListener("touchstart", onMouseDown);
-  //     document.addEventListener("touchend", onMouseUp);
-  //   };
-  // }, []);
+    return () => {
+      // document.removeEventListener("mousedown", onMouseDown);
+      // document.removeEventListener("mouseup", onMouseUp);
+      document.addEventListener("touchstart", onMouseDown);
+      document.addEventListener("touchend", onMouseUp);
+    };
+  }, []);
 
   useEffect(() => {
     const unsubscribe = useStats.subscribe(
@@ -181,6 +181,8 @@ const WiggleFigure = () => {
       }
 
       let speed = get().run ? RUN_SPEED : WALK_SPEED;
+
+      // console.log(state.pointer);
 
       if (isClicking.current) {
         if (Math.abs(state.pointer.x) > 0.1) {
