@@ -5,6 +5,9 @@ import useStats from "../../stores/useStats";
 const HomePage = () => {
   console.log("home r");
 
+  const counterRef = useRef(null);
+  const finalButtonRef = useRef(null);
+
   useEffect(() => {
     const unsubscribe = useStats.subscribe(
       (state) => state.scopeAnim,
@@ -14,7 +17,7 @@ const HomePage = () => {
           // console.log("animate");
           gsap.to(".label", {
             opacity: 1,
-            duration: 0.75,
+            duration: 1,
             delay: 2.5,
             ease: "hop",
           });
@@ -26,7 +29,7 @@ const HomePage = () => {
           });
           gsap.to(".icon img", {
             opacity: 0.775,
-            duration: 0.75,
+            duration: 1,
             delay: 2.5,
             ease: "hop",
           });
@@ -43,11 +46,50 @@ const HomePage = () => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = useStats.subscribe(
+      (state) => state.hintCount,
+      (value, prevValue) => {
+        // console.log(value);
+        counterRef.current.textContent = `${value}/3`;
+
+        if (value === 3) {
+          gsap.to(finalButtonRef.current, {
+            opacity: 1,
+            duration: 1.75,
+            delay: 0.5,
+            ease: "hop",
+            onComplete: () => {
+              gsap.to(finalButtonRef.current, {
+                opacity: 0,
+                duration: 0.75,
+                delay: 0,
+                ease: "hop",
+                onComplete: () => {
+                  finalButtonRef.current.textContent =
+                    "Unfortunately the castle is sick";
+                  gsap.to(finalButtonRef.current, {
+                    opacity: 1,
+                    duration: 1.75,
+                    delay: 0.5,
+                    ease: "hop",
+                  });
+                },
+              });
+            },
+          });
+        }
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div className="relative z-0 inset-0 h-[100svh] w-full flex justify-center items-center bg-transparent">
       <p
         style={{ opacity: 0 }}
-        className="label z-[1] absolute top-[40px] right-[2.25rem] pointer-events-auto text-[#3d3d3d] text-[0.875rem]  !font-[500] normal-case"
+        className="label z-[1] absolute top-[40px] right-[2.25rem] pointer-events-auto text-[#3d3d3d] text-[0.875rem] !font-[500] normal-case"
       >
         Made by
         <span
@@ -72,6 +114,7 @@ const HomePage = () => {
       <div className="absolute pl-[2.25rem] h-[150px] pr-[2.25rem] bottom-6 w-full flex flex-row justify-between items-center font-main">
         <div className="counter h-full flex items-end">
           <p
+            ref={counterRef}
             style={{ opacity: 0 }}
             className="pointer-events-auto text-[#3d3d3d] text-[0.875rem] sm:text-[1rem] !font-[500] normal-case mt-7"
           >
@@ -121,6 +164,15 @@ const HomePage = () => {
           alt="arrow-icon"
         />
       </div> */}
+
+      <button
+        ref={finalButtonRef}
+        style={{ opacity: 0 }}
+        className="finalButton z-[1] absolute top-[95px] left-[2.125rem] pointer-events-auto text-[#3d3d3d] text-[0.875rem] !font-[600] uppercase
+        "
+      >
+        Congratulations you found all the missing peaces
+      </button>
     </div>
   );
 };

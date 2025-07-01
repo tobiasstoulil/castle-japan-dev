@@ -18,11 +18,7 @@ const Model = () => {
   noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
   noiseTexture.encoding = THREE.NoColorSpace;
 
-  const vornoiTexture = useTexture("/textures/voronoi.png");
-  vornoiTexture.wrapS = vornoiTexture.wrapT = THREE.RepeatWrapping;
-  vornoiTexture.encoding = THREE.NoColorSpace;
-
-  const bakedNeutralTexture = useTexture("/textures/bakeNeutral.jpg");
+  const bakedNeutralTexture = useTexture("/textures/bakeNeutral2.webp");
   bakedNeutralTexture.flipY = false;
   bakedNeutralTexture.encoding = THREE.sRGBEncoding;
 
@@ -30,6 +26,8 @@ const Model = () => {
     () =>
       new THREE.ShaderMaterial({
         uniforms: {
+          uTime: new THREE.Uniform(0),
+          uProgress: new THREE.Uniform(0),
           uNeutralTexture: new THREE.Uniform(bakedNeutralTexture),
           uNoiseTexture: new THREE.Uniform(noiseTexture),
         },
@@ -74,6 +72,30 @@ const Model = () => {
 
     return () => {};
   }, [gltf]);
+
+  useEffect(() => {
+    const unsubscribe = useStats.subscribe(
+      (state) => state.hintCount,
+      (value, prevValue) => {
+        // console.log(value);
+
+        if (value === 3) {
+          gsap.to(bakedNeutralMaterial.uniforms.uProgress, {
+            value: 1,
+            duration: 1.75,
+            delay: 0.5,
+            ease: "hop",
+          });
+        }
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  useFrame((_, delta) => {
+    bakedNeutralMaterial.uniforms.uTime.value += delta;
+  });
 
   return (
     <>

@@ -16,11 +16,6 @@ void main()
     float noise = texture2D(uNoiseTexture, vUv).r;
     noise = pow(noise * 5., 0.5);
     
-    // if(facing == 1.){
-    //     discard;
-    // }
-
-
     if(col.r <= 0.275) {
         discard;
     }

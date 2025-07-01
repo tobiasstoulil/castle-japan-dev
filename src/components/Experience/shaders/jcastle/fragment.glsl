@@ -1,5 +1,7 @@
 uniform sampler2D uNeutralTexture;
 uniform sampler2D uNoiseTexture;
+uniform float uProgress;
+uniform float uTime;
 
 
 varying vec2 vUv;
@@ -27,8 +29,6 @@ void main()
     // facing = smoothstep(0., 0.0025 + noise, facing);
     // // facing = pow(facing, 1.);
 
-
-
     // facing = clamp(facing, 0., 1.);
 
     
@@ -38,11 +38,22 @@ void main()
 
 
     vec3 neutralCol = texture2D(uNeutralTexture, vUv).rgb;
-    neutralCol *= 1.1;
+    neutralCol *= 1.125;
 
+    float time = uTime * 0.0375;
+
+    float noise = texture2D(uNoiseTexture, vUv * 1. + time).r;
+    noise = noise * 3.;
+    noise = pow(noise, 1.25);
+
+    noise *= uProgress;
+
+    vec3 progressCol = neutralCol * 0.9;
+
+    vec3 finalProgressCol = mix(neutralCol, progressCol, noise);
 
     // gl_FragColor = vec4(vec3(neutralCol ), 1.- facing);
-    gl_FragColor = vec4(vec3(neutralCol ), 1.);
+    gl_FragColor = vec4(vec3(finalProgressCol ), 1.);
 
     #include <tonemapping_fragment>
     #include <colorspace_fragment>    

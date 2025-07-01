@@ -8,12 +8,19 @@ import gsap from "gsap";
 import castlePropsVertexShader from "../shaders/castleProps/vertex.glsl";
 import castlePropsFragmentShader from "../shaders/castleProps/fragment.glsl";
 
+import castleProgressVertexShader from "../shaders/castleProgress/vertex.glsl";
+import castleProgressFragmentShader from "../shaders/castleProgress/fragment.glsl";
+
 const PropsModel = () => {
   const gltf = useGLTF("/models/japan-castle-props.glb");
 
   const bakedPropsTexture = useTexture("/textures/bakeProps1.jpg");
   bakedPropsTexture.flipY = false;
   bakedPropsTexture.encoding = THREE.sRGBEncoding;
+
+  const noiseTexture = useTexture("/textures/noise.png");
+  noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+  noiseTexture.encoding = THREE.NoColorSpace;
 
   const bakedNeutralMaterial = useMemo(
     () =>
@@ -28,6 +35,21 @@ const PropsModel = () => {
     []
   );
 
+  const bakedProgressMaterial = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        uniforms: {
+          uNeutralTexture: new THREE.Uniform(bakedPropsTexture),
+          uNoiseTexture: new THREE.Uniform(noiseTexture),
+          uProgress: new THREE.Uniform(0),
+        },
+        transparent: true,
+        vertexShader: castleProgressVertexShader,
+        fragmentShader: castleProgressFragmentShader,
+      }),
+    []
+  );
+
   useEffect(() => {
     gltf.scene.traverse((child) => {
       // console.log(child.name);
@@ -35,12 +57,37 @@ const PropsModel = () => {
       //
       if (child.isMesh) {
         child.material.dispose();
-        child.material = bakedNeutralMaterial;
+        if (child.name.includes("Progress")) {
+          child.material = bakedProgressMaterial;
+          return;
+        } else {
+          child.material = bakedNeutralMaterial;
+        }
       }
     });
 
     return () => {};
   }, [gltf]);
+
+  useEffect(() => {
+    const unsubscribe = useStats.subscribe(
+      (state) => state.hintCount,
+      (value, prevValue) => {
+        console.log(value);
+        if (value === 2) {
+          gsap.to(bakedProgressMaterial.uniforms.uProgress, {
+            value: 1,
+            duration: 6,
+            delay: 0.5,
+            ease: "hop",
+          });
+          // console.log("animate");
+        }
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <>

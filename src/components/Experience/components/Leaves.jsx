@@ -169,7 +169,7 @@ const Leaves = () => {
         } else if (child.name === "Two") {
           child.material = leavesMaterialTwo;
           return;
-        } else if (child.name === "Three") {
+        } else if (child.name === "Three001") {
           child.material = leavesMaterialThree;
           return;
         } else if (child.name === "Four") {

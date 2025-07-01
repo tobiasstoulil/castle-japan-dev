@@ -1,97 +1,3 @@
-// const WiggleFigure = () => {
-//   const { nodes, scene } = useGLTF("/models/wiggle-rig.glb");
-//   const wiggleBones = useRef([]);
-//   const rb = useRef();
-
-//   const [, get] = useKeyboardControls();
-
-//   const setCharPosition = useStats((state) => state.setCharPosition);
-
-//   const speed = 0.1;
-//   // const camera = useThree((state) => state.camera);
-//   // const offset = new THREE.Vector3(0, 1, -3);
-
-//   useEffect(() => {
-//     wiggleBones.current.length = 0;
-
-//     // console.log(nodes);
-//     nodes.RootBone.traverse((bone) => {
-//       if (bone.isBone && bone !== nodes.RootBone) {
-//         const wiggleBone = new WiggleBone(bone, {
-//           stiffness: 500,
-//           damping: 50,
-//         });
-//         wiggleBones.current.push(wiggleBone);
-//       }
-//     });
-//     return () => {
-//       wiggleBones.current.forEach((wiggleBone) => {
-//         wiggleBone.reset();
-//         wiggleBone.dispose();
-//       });
-//     };
-//   }, [nodes]);
-
-//   const rotationAngle = useRef(0);
-
-//   useFrame((state, delta) => {
-//     wiggleBones.current.forEach((wiggleBone) => {
-//       wiggleBone.update();
-//     });
-
-//     const { forward, backward, left, right, jump, run } = get();
-
-//     if (
-//       !forward &&
-//       !backward &&
-//       !left &&
-//       !right &&
-//       !jump &&
-//       !run &&
-//       rb.current.position.y < 0.01
-//     ) {
-//       return;
-//     }
-
-//     let t = 1.0 - Math.pow(0.01, delta);
-
-//     if (left) {
-//       rotationAngle.current += t * 0.5;
-//     }
-//     if (right) {
-//       rotationAngle.current -= t * 0.5;
-//     }
-
-//     rb.current.rotation.y = THREE.MathUtils.lerp(
-//       rb.current.rotation.y,
-//       rotationAngle.current,
-//       t * 2
-//     );
-
-//     const direction = new THREE.Vector3(
-//       Math.sin(rotationAngle.current),
-//       0,
-//       Math.cos(rotationAngle.current)
-//     );
-
-//     direction.normalize();
-
-//     if (forward) rb.current.position.addScaledVector(direction, speed);
-//     if (backward) rb.current.position.addScaledVector(direction, -speed);
-
-//     rb.current.position.y += jump * speed;
-
-//     if (!jump) {
-//       rb.current.position.y = THREE.MathUtils.lerp(
-//         rb.current.position.y,
-//         0,
-//         t * 0.25
-//       );
-//     }
-
-//     setCharPosition(rb.current.position.clone());
-//   });
-
 import { CapsuleCollider, RigidBody } from "@react-three/rapier";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -106,38 +12,35 @@ import { WiggleRigHelper } from "wiggle/helper";
 // import { WiggleBone } from "wiggle";
 import { WiggleBone } from "wiggle/spring";
 
-const normalizeAngle = (angle) => {
-  while (angle > Math.PI) angle -= Math.PI * 2;
-  while (angle < -Math.PI) angle += Math.PI * 2;
+// const normalizeAngle = (angle) => {
+//   while (angle > Math.PI) angle -= Math.PI * 2;
+//   while (angle < -Math.PI) angle += Math.PI * 2;
 
-  return angle;
-};
+//   return angle;
+// };
 
-const lerpAngle = (start, end, t) => {
-  start = normalizeAngle(start);
-  end = normalizeAngle(end);
+// const lerpAngle = (start, end, t) => {
+//   start = normalizeAngle(start);
+//   end = normalizeAngle(end);
 
-  if (Math.abs(end - start) > Math.PI) {
-    if (end > start) {
-      start += Math.PI * 2;
-    } else {
-      end += Math.PI * 2;
-    }
-  }
+//   if (Math.abs(end - start) > Math.PI) {
+//     if (end > start) {
+//       start += Math.PI * 2;
+//     } else {
+//       end += Math.PI * 2;
+//     }
+//   }
 
-  return normalizeAngle(start + (end - start) * t);
-};
+//   return normalizeAngle(start + (end - start) * t);
+// };
 
 const WiggleFigure = () => {
   const { nodes, scene } = useGLTF("/models/wiggle-rig.glb");
 
-  const matcapTexture = useTexture("/textures/m3.png");
-
-  const material = new THREE.MeshMatcapMaterial({
-    matcap: matcapTexture,
-  });
-
   const setCharPosition = useStats((state) => state.setCharPosition);
+  const increaseHintCount = useStats((state) => state.increaseHintCount);
+
+  const isIncreased = useRef(false);
 
   const { WALK_SPEED, RUN_SPEED, ROTATION_SPEED } = useControls(
     "Character Control",
@@ -158,10 +61,19 @@ const WiggleFigure = () => {
   const character = useRef();
   const wiggleBones = useRef([]);
 
+  const hintPositionRef = useRef(null);
+  const isLoaded = useRef(false);
+
   const rotationTarget = useRef(0);
   const characterRotationTarget = useRef(0);
   const [_, get] = useKeyboardControls();
   const isClicking = useRef(false);
+
+  const matcapTexture = useTexture("/textures/m3.png");
+
+  const material = new THREE.MeshMatcapMaterial({
+    matcap: matcapTexture,
+  });
 
   // useEffect(() => {
   //   const onMouseDown = (e) => {
@@ -185,6 +97,21 @@ const WiggleFigure = () => {
   //     document.addEventListener("touchend", onMouseUp);
   //   };
   // }, []);
+
+  useEffect(() => {
+    const unsubscribe = useStats.subscribe(
+      (state) => state.scopeAnim,
+      (value, prevValue) => {
+        // console.log(value);
+        if (value) {
+          setTimeout(() => {
+            isLoaded.current = true;
+          }, 2500);
+        }
+      }
+    );
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     wiggleBones.current.length = 0;
@@ -220,10 +147,15 @@ const WiggleFigure = () => {
 
   useFrame((state, delta) => {
     // console.log(rb.current);
+
     if (rb.current) {
       wiggleBones.current.forEach((wiggleBone) => {
         wiggleBone.update();
       });
+
+      if (!isLoaded.current) {
+        return;
+      }
 
       const vel = rb.current.linvel();
 
@@ -276,6 +208,29 @@ const WiggleFigure = () => {
         vel.z =
           Math.cos(rotationTarget.current + characterRotationTarget.current) *
           speed;
+
+        const worldPosition = new THREE.Vector3();
+        container.current.getWorldPosition(worldPosition);
+        worldPosition.y -= 2;
+        // console.log("World Position:", worldPosition.y);
+
+        if (worldPosition.y < 1) {
+          isJumped.current = false;
+        }
+
+        setCharPosition(worldPosition.clone());
+
+        // const hintPosition = new THREE.Vector3(0, 0, 0);
+
+        const distFromHint = worldPosition.distanceTo(hintPositionRef.current);
+        // console.log(distFromHint, hintPositionRef.current);
+        // console.log(isIncreased.current);
+
+        if (distFromHint < 5 && !isIncreased.current) {
+          increaseHintCount();
+          isIncreased.current = true;
+          // console.log("hint");
+        }
       } else {
         vel.x = 0;
         vel.z = 0;
@@ -285,7 +240,7 @@ const WiggleFigure = () => {
         if (!isJumped.current) {
           isJumped.current = true;
 
-          vel.y = 8;
+          vel.y = 7;
           // console.log("jump");
         }
       }
@@ -299,23 +254,25 @@ const WiggleFigure = () => {
       rb.current.setLinvel(vel, true);
     }
 
-    const worldPosition = new THREE.Vector3();
-    container.current.getWorldPosition(worldPosition);
-    worldPosition.y -= 2;
-    // console.log("World Position:", worldPosition.y);
-
-    if (worldPosition.y < 1) {
-      isJumped.current = false;
-    }
-
-    setCharPosition(worldPosition.clone());
-
     container.current.rotation.y = THREE.MathUtils.lerp(
       container.current.rotation.y,
       rotationTarget.current,
-      0.1 //10% z přidaného rotatce; na každej frame se k nemu bude dostavat
+      0.1
     );
   });
+
+  useEffect(() => {
+    const unsubscribe = useStats.subscribe(
+      (state) => state.hintPosition,
+      (value, prevValue) => {
+        hintPositionRef.current = value;
+        setTimeout(() => (isIncreased.current = false), 1000);
+        // console.log(value);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <RigidBody ref={rb} colliders={false} lockRotations>

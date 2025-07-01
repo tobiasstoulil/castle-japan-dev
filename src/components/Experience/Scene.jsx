@@ -149,7 +149,27 @@ export default function Scene() {
       }
     );
 
-    return () => unsubscribe();
+    const resize = () => {
+      // console.log("resize", window.innerWidth);
+      if (window.innerWidth < 1080) {
+        cameraRef.current.zoom = 14;
+
+        if (window.innerWidth < 768) {
+          cameraRef.current.zoom = 12;
+        }
+      } else {
+        cameraRef.current.zoom = 20;
+      }
+      cameraRef.current.updateProjectionMatrix();
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener("resize", resize);
+    };
   }, [shaderTransitionMaterial]);
 
   return (

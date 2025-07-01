@@ -14,6 +14,9 @@ export default create(
 
       hintCount: 0,
       increaseHintCount: () => set({ hintCount: get().hintCount + 1 }),
+
+      hintPosition: { x: 0, y: 0, z: 0 },
+      setHintPosition: (ref) => set({ hintPosition: ref }),
     };
   })
 );
