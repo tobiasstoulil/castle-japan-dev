@@ -1,5 +1,7 @@
 uniform float uTime;
 uniform float uProgress;
+uniform float uImpulseProgress;
+uniform vec3 uImpulsePosition;
 uniform vec3 uCharPosition;
 uniform sampler2D uTexture;
 uniform sampler2D uNoiseTexture;
@@ -27,15 +29,30 @@ void main()
     // float dist = distance(vWorldPosition + noise, uPoint);
     dist = 1.- smoothstep(-0.5, 2. + noise, dist);
 
+    // float impulse = distance(vWorldPosition, uImpulsePosition);
+
+    // float impulseTime = uImpulseProgress * 200.;
+    // float impulseFirstCircle = 1. - smoothstep(-8. + impulseTime, 0. + impulseTime, impulse);
+    // float impulseSecondCircle = 1. - smoothstep(-13. + impulseTime, -5. + impulseTime, impulse);
+
+    // impulse = impulseFirstCircle - impulseSecondCircle;
+    // impulse = pow(impulse, 5. + 4. * noise);
+    // impulse *= 10.;
+    // impulse = pow(impulse, 8.);
+    // impulse = clamp(impulse, 0., 1.);
+     
+
     // vec3 baseCol = vec3(0.8);
 
     vec3 finalCol = mix(col, col * 0.6, dist);
-     progressCol = mix(progressCol, progressCol * 0.6, dist);
+    progressCol = mix(progressCol, progressCol * 0.6, dist);
     // finalCol *= 1.28;
     // finalCol *= 1.1825;
 
     vec3 finalProgresCol = mix(finalCol, progressCol, uProgress * 2.);
     finalProgresCol *= 1.28;
+
+    // vec3 finalHintColor = mix(finalProgresCol, finalProgresCol * 0.925, impulse);
 
     gl_FragColor = vec4(vec3(finalProgresCol), 1.0);
 

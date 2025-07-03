@@ -84,6 +84,10 @@ const Model = () => {
           child.material = windowMaterial;
         } else {
           child.material = bakedNeutralMaterial;
+          console.log(child.name);
+          if (child.name === "Plane106") {
+            child.position.y -= 1;
+          }
         }
       }
     });
@@ -100,23 +104,23 @@ const Model = () => {
         if (value === 1) {
           gsap.to(bakedNeutralMaterial.uniforms.uFirstProgress, {
             value: 1,
-            duration: 1.7,
-            delay: 0.35,
-            ease: "hop",
+            duration: 2.5,
+            delay: 0.2,
+            ease: "power3.in",
           });
         } else if (value === 2) {
           gsap.to(bakedNeutralMaterial.uniforms.uSecondProgress, {
             value: 1,
-            duration: 1.7,
-            delay: 0.35,
-            ease: "hop",
+            duration: 2.5,
+            delay: 0.2,
+            ease: "power3.in",
           });
         } else if (value === 3) {
           gsap.to(bakedNeutralMaterial.uniforms.uThirdProgress, {
             value: 1,
-            duration: 1.7,
-            delay: 0.35,
-            ease: "hop",
+            duration: 2.5,
+            delay: 0.2,
+            ease: "power3.in",
           });
         }
       }

@@ -185,6 +185,38 @@ export default function Scene() {
     };
   }, [shaderTransitionMaterial]);
 
+  useEffect(() => {
+    const unsubscribe = useStats.subscribe(
+      (state) => state.hintCount,
+      (value, prevValue) => {
+        // console.log(value);
+
+        if (value === 3) {
+          gsap.to(cameraRef.current, {
+            zoom: cameraRef.current.zoom + 10,
+            duration: 2,
+            delay: 1,
+            onUpdate: () => {
+              cameraRef.current.updateProjectionMatrix();
+            },
+            onComplete: () => {
+              gsap.to(cameraRef.current, {
+                zoom: cameraRef.current.zoom - 10,
+                duration: 2,
+                delay: 1,
+                onUpdate: () => {
+                  cameraRef.current.updateProjectionMatrix();
+                },
+              });
+            },
+          });
+        }
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <>
       <OrthographicCamera

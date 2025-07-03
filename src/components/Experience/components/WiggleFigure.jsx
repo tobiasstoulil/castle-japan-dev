@@ -48,7 +48,7 @@ const WiggleFigure = () => {
       WALK_SPEED: { value: 5, min: 0.1, max: 10, step: 0.1 },
       RUN_SPEED: { value: 8, min: 0.2, max: 20, step: 0.1 },
       ROTATION_SPEED: {
-        value: degToRad(1.5),
+        value: degToRad(2),
         min: degToRad(0.1),
         max: degToRad(5),
         step: degToRad(0.1),

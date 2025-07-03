@@ -78,9 +78,12 @@ void main()
 
     float time = uTime * 0.0375;
 
-    float noise = texture2D(uNoiseTexture, vUv * 1. + time).r;
-    noise = noise * 3.;
-    noise = pow(noise, 1.25);
+    float noise = texture2D(uNoiseTexture, vUv * 2.).r;
+    noise = noise * 2.;
+    noise = pow(noise, 6.);
+    
+    // noise = noise * uFirstProgress * 2. + uFirstProgress * 1.;
+    // noise = clamp(noise, 0., 1.);
 
     // noise *= uProgress;
 
@@ -88,9 +91,18 @@ void main()
     // vec3 finalProgressCol = mix(neutralCol, progressCol, noise);
     // gl_FragColor = vec4(vec3(neutralCol ), 1.- facing);
 
-    vec3 finalCol = mix(neutralCol, firstStepCol, uFirstProgress);
-    finalCol = mix(finalCol, secondStepCol, uSecondProgress);
-    finalCol = mix(finalCol, thirdStep, uThirdProgress);
+    float firstProgress = noise * uFirstProgress * 0.5 + uFirstProgress * 1.;
+    firstProgress = clamp(firstProgress, 0., 1.);
+
+    float secondProgress = noise * uSecondProgress * 2. + uSecondProgress * 1.;
+    secondProgress = clamp(secondProgress, 0., 1.);
+    
+    float thirdProgress = noise * uThirdProgress * 2. + uThirdProgress * 1.;
+     thirdProgress = clamp(thirdProgress, 0., 1.);
+
+    vec3 finalCol = mix(neutralCol, firstStepCol, firstProgress);
+    finalCol = mix(finalCol, secondStepCol, secondProgress);
+    finalCol = mix(finalCol, thirdStep, thirdProgress);
 
     gl_FragColor = vec4(vec3(finalCol ), 1.);
 

@@ -17,7 +17,7 @@ const HomePage = () => {
   useEffect(() => {
     const themeSound = themeSoundRef.current;
 
-    themeSound.volume = 0.3;
+    themeSound.volume = 0.375;
     themeSound.loop = true;
 
     // console.log(isPlaying);
@@ -102,7 +102,7 @@ const HomePage = () => {
                   gsap.to(finalButtonRef.current, {
                     opacity: 1,
                     duration: 1.75,
-                    delay: 3,
+                    delay: 1.5,
                     ease: "hop",
                   });
                 },

@@ -40,6 +40,8 @@ const Colliders = () => {
         uniforms: {
           uTime: new THREE.Uniform(0),
           uProgress: new THREE.Uniform(0),
+          uImpulseProgress: new THREE.Uniform(0),
+          uImpulsePosition: new THREE.Uniform(new THREE.Vector3(-21, 0, 34)),
           uCharPosition: new THREE.Uniform(new THREE.Vector3(0, 0, 0)),
           uTexture: new THREE.Uniform(bakeGroundTexture),
           uProgressTexture: new THREE.Uniform(bakeGroundProgressTexture),
@@ -83,7 +85,22 @@ const Colliders = () => {
       (state) => state.hintCount,
       (value, prevValue) => {
         // console.log(value);
+
+        if (value === 1) {
+          groundMaterial.uniforms.uImpulsePosition.value = new THREE.Vector3(
+            -21,
+            0,
+            34
+          );
+        }
+
         if (value === 2) {
+          groundMaterial.uniforms.uImpulsePosition.value = new THREE.Vector3(
+            23,
+            0,
+            5.6
+          );
+
           gsap.to(groundMaterial.uniforms.uProgress, {
             value: 1,
             duration: 2,
@@ -91,6 +108,27 @@ const Colliders = () => {
           });
           // console.log("animate");
         }
+        if (value === 3) {
+          groundMaterial.uniforms.uImpulsePosition.value = new THREE.Vector3(
+            -12,
+            0,
+            -3
+          );
+        }
+
+        gsap.to(groundMaterial.uniforms.uImpulseProgress, {
+          value: 1,
+          duration: 4,
+          ease: "none",
+          delay: 0.25,
+          onComplete: () => {
+            gsap.to(groundMaterial.uniforms.uImpulseProgress, {
+              value: 0,
+              duration: 0,
+              ease: "none",
+            });
+          },
+        });
       }
     );
 
