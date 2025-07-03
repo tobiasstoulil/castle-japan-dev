@@ -1,12 +1,33 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import useStats from "../../stores/useStats";
+import SoundSvg from "./SoundSvg";
 
 const HomePage = () => {
   console.log("home r");
 
   const counterRef = useRef(null);
   const finalButtonRef = useRef(null);
+
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const themeSoundRef = useRef(new Audio("/sounds/themeTrackFinal.mp3"));
+  const hitSoundRef = useRef(new Audio("/sounds/hitSound.mp3"));
+
+  useEffect(() => {
+    const themeSound = themeSoundRef.current;
+
+    themeSound.volume = 0.3;
+    themeSound.loop = true;
+
+    // console.log(isPlaying);
+    if (isPlaying) {
+      themeSound.play();
+    } else {
+      themeSound.pause();
+      themeSound.currentTime = 0;
+    }
+  }, [isPlaying]);
 
   useEffect(() => {
     const unsubscribe = useStats.subscribe(
@@ -27,7 +48,7 @@ const HomePage = () => {
             delay: 1.75,
             ease: "hop",
           });
-          gsap.to(".icon img", {
+          gsap.to(".icon", {
             opacity: 0.775,
             duration: 1,
             delay: 2.5,
@@ -52,6 +73,16 @@ const HomePage = () => {
       (value, prevValue) => {
         // console.log(value);
         counterRef.current.textContent = `${value}/3`;
+        // console.log(isPlaying);
+
+        if (isPlaying) {
+          hitSoundRef.current.currentTime = 0;
+          hitSoundRef.current.volume = 0.2;
+          hitSoundRef.current.play();
+        } else {
+          hitSoundRef.current.pause();
+          hitSoundRef.current.currentTime = 0;
+        }
 
         if (value === 3) {
           gsap.to(finalButtonRef.current, {
@@ -83,10 +114,10 @@ const HomePage = () => {
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [isPlaying]);
 
   return (
-    <div className="relative pointer-events-none z-0 inset-0 h-[100svh] w-full flex justify-center items-center bg-transparent">
+    <div className="relative z-0 inset-0 h-[100svh] w-full flex justify-center items-center bg-transparent">
       <p
         style={{ opacity: 0 }}
         className="label z-[1] absolute top-[40px] right-[2.25rem] pointer-events-auto text-[#3d3d3d] text-[0.875rem] !font-[500] normal-case"
@@ -102,13 +133,25 @@ const HomePage = () => {
         </span>
       </p>
 
-      <div className="icon absolute top-[18px] left-[0.5rem]">
+      {/* <div className="icon absolute top-[18px] left-[0.5rem]">
         <img
           style={{ opacity: 0 }}
           className="select-none object-cover cursor-pointer scale-[0.375] hover:scale-[0.4] transition-all"
           src="/images/suzanne-icon.png"
           alt="suzanne-icon"
         />
+
+ 
+      </div> */}
+
+      <div
+        style={{ opacity: 0 }}
+        onClick={() => setIsPlaying(!isPlaying)}
+        className="z-50 cursor-pointer icon absolute top-[40px] left-[2.25rem] h-5 w-5"
+      >
+        <SoundSvg isPlaying={isPlaying} />
+        <div className="absolute left-0 top-0 h-full w-[5%] bg-white/40"></div>
+        <div className="absolute right-0 top-0 h-full w-[5%]  bg-white/40"></div>
       </div>
 
       <div className="absolute pl-[1.5rem] sm:pl-[2.25rem] h-[150px] pr-[1.5rem] sm:pr-[2.25rem] bottom-6 w-full flex flex-row justify-between items-center font-main">
@@ -168,7 +211,7 @@ const HomePage = () => {
       <button
         ref={finalButtonRef}
         style={{ opacity: 0 }}
-        className="finalButton z-[1] absolute top-[95px] left-[2.125rem] pointer-events-auto text-[#3d3d3d] text-[0.875rem] !font-[600] uppercase
+        className="pointer-events-none finalButton z-[1] absolute top-[40px] left-[5.25rem] text-[#3d3d3d] text-[0.875rem] !font-[600] uppercase
         "
       >
         Congratulations you found all the missing peaces

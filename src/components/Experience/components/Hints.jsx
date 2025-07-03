@@ -128,7 +128,8 @@ const Hints = () => {
     const unsubscribe = useStats.subscribe(
       (state) => state.hintCount,
       (value, prevValue) => {
-        console.log(value);
+        // console.log(value);
+
         if (value === 1) {
           gsap.to(hintMaterialOne.uniforms.uAlphaProgress, {
             value: 1,
@@ -159,8 +160,8 @@ const Hints = () => {
 
           gsap.to(hintMaterialTwo.uniforms.uAlphaProgress, {
             value: 0,
-            duration: 1.25,
-            delay: 2,
+            duration: 1.5,
+            delay: 2.25,
             ease: "hop",
           });
 

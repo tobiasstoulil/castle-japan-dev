@@ -1,5 +1,5 @@
 import { useGLTF, useTexture } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { RigidBody, TrimeshCollider } from "@react-three/rapier";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -58,6 +58,8 @@ const Colliders = () => {
     []
   );
 
+  const { scene } = useThree();
+
   useEffect(() => {
     gltf.scene.traverse((child) => {
       // console.log(child.name);
@@ -84,7 +86,7 @@ const Colliders = () => {
         if (value === 2) {
           gsap.to(groundMaterial.uniforms.uProgress, {
             value: 1,
-            duration: 1,
+            duration: 2,
             ease: "hop",
           });
           // console.log("animate");

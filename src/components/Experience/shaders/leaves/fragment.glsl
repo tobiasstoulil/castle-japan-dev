@@ -20,7 +20,7 @@ void main()
         discard;
     }
 
-    float dist = distance(uCharPosition.xz + vec2(7., 7.), vWorldPosition.xz);
+    float dist = distance(uCharPosition.xz + vec2(6., 6.), vWorldPosition.xz);
     dist = smoothstep(0., 10., dist + noise);
     dist = pow(dist, 27.5);
 

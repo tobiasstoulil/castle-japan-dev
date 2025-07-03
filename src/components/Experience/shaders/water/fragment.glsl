@@ -30,11 +30,11 @@ void main()
     noiseSmall = smoothstep(-1., 1., noiseSmall * 5.);
     noiseSmall = pow(noiseSmall, 0.7);
     
-    float noiseDistt = texture2D(uNoise, vUv * 16. + vec2(time * 5., time * 0.25)).r;
+    float noiseDistt = texture2D(uNoise, vUv * 17. + vec2(time * 5., time * 0.25)).r;
     noiseDistt = pow(noiseDistt, 4.);
     noiseDistt = smoothstep(-1., 1., noiseDistt * 5.);
-    noiseDistt = pow(noiseDistt, 0.7);
-    noiseDistt *= 1.2;
+    noiseDistt = pow(noiseDistt, 0.8);
+    noiseDistt *= 1.4;
 
     float noiseIndex = texture2D(uNoise, vUv * 1.).b;
     // noiseIndex = pow(noiseIndex* 2., 10.);
@@ -80,7 +80,7 @@ void main()
     // finalekNoise *= 2.;
 
 
-    gl_FragColor = vec4(vec3(finalekNoise * 1.6), pow(finalekNoise * a, 1.1));
+    gl_FragColor = vec4(vec3(finalekNoise * 1.525), pow(finalekNoise * a, 1.1));
 
     #include <tonemapping_fragment>
     #include <colorspace_fragment>    

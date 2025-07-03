@@ -45,10 +45,10 @@ const WiggleFigure = () => {
   const { WALK_SPEED, RUN_SPEED, ROTATION_SPEED } = useControls(
     "Character Control",
     {
-      WALK_SPEED: { value: 4, min: 0.1, max: 10, step: 0.1 },
-      RUN_SPEED: { value: 7, min: 0.2, max: 20, step: 0.1 },
+      WALK_SPEED: { value: 5, min: 0.1, max: 10, step: 0.1 },
+      RUN_SPEED: { value: 8, min: 0.2, max: 20, step: 0.1 },
       ROTATION_SPEED: {
-        value: degToRad(3.5),
+        value: degToRad(1.5),
         min: degToRad(0.1),
         max: degToRad(5),
         step: degToRad(0.1),
@@ -129,8 +129,8 @@ const WiggleFigure = () => {
     nodes.RootBone.traverse((bone) => {
       if (bone.isBone && bone !== nodes.RootBone) {
         const wiggleBone = new WiggleBone(bone, {
-          stiffness: 400,
-          damping: 25,
+          stiffness: 300,
+          damping: 75,
         });
         wiggleBones.current.push(wiggleBone);
       }
@@ -173,11 +173,11 @@ const WiggleFigure = () => {
       }
 
       if (get().leftward) {
-        movement.x = 1;
+        movement.x = get().backward ? -1 : 1;
       }
 
       if (get().rightward) {
-        movement.x = -1;
+        movement.x = get().backward ? 1 : -1;
       }
 
       let speed = get().run ? RUN_SPEED : WALK_SPEED;
@@ -207,6 +207,7 @@ const WiggleFigure = () => {
         vel.x =
           Math.sin(rotationTarget.current + characterRotationTarget.current) *
           speed;
+
         vel.z =
           Math.cos(rotationTarget.current + characterRotationTarget.current) *
           speed;
@@ -222,11 +223,8 @@ const WiggleFigure = () => {
 
         setCharPosition(worldPosition.clone());
 
-        // const hintPosition = new THREE.Vector3(0, 0, 0);
-
         const distFromHint = worldPosition.distanceTo(hintPositionRef.current);
         // console.log(distFromHint, hintPositionRef.current);
-        // console.log(isIncreased.current);
 
         if (distFromHint < 5 && !isIncreased.current) {
           increaseHintCount();
@@ -236,13 +234,23 @@ const WiggleFigure = () => {
       } else {
         vel.x = 0;
         vel.z = 0;
+        const worldPosition = new THREE.Vector3();
+        container.current.getWorldPosition(worldPosition);
+        worldPosition.y -= 2;
+        // console.log("World Position:", worldPosition.y);
+
+        if (worldPosition.y < 1) {
+          isJumped.current = false;
+        }
+
+        setCharPosition(worldPosition.clone());
       }
 
       if (get().jump) {
         if (!isJumped.current) {
           isJumped.current = true;
 
-          vel.y = 7;
+          vel.y = 6;
           // console.log("jump");
         }
       }
@@ -280,13 +288,13 @@ const WiggleFigure = () => {
     <RigidBody ref={rb} colliders={false} lockRotations>
       <group ref={container}>
         <group ref={character}>
-          <group scale={1.825} position={[0, -2.3, 0]}>
+          <group scale={1.825} position={[0, -1.25, 0]}>
             <primitive object={scene} />
             {/* <mesh ref={suzzaneRef} /> */}
           </group>
         </group>
       </group>
-      <CapsuleCollider args={[1, 2]} />
+      <CapsuleCollider args={[1, 1]} />
     </RigidBody>
   );
 };

@@ -73,13 +73,14 @@ const PropsModel = () => {
     const unsubscribe = useStats.subscribe(
       (state) => state.hintCount,
       (value, prevValue) => {
-        console.log(value);
+        // console.log(value);
+
         if (value === 2) {
           gsap.to(bakedProgressMaterial.uniforms.uProgress, {
             value: 1,
-            duration: 6,
+            duration: 8,
             delay: 0.5,
-            ease: "hop",
+            ease: "power2.inOut",
           });
           // console.log("animate");
         }
