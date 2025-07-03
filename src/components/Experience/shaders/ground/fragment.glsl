@@ -36,7 +36,7 @@ void main()
     // float impulseSecondCircle = 1. - smoothstep(-13. + impulseTime, -5. + impulseTime, impulse);
 
     // impulse = impulseFirstCircle - impulseSecondCircle;
-    // impulse = pow(impulse, 5. + 4. * noise);
+    // impulse = pow(impulse, 2. + 2. * noise);
     // impulse *= 10.;
     // impulse = pow(impulse, 8.);
     // impulse = clamp(impulse, 0., 1.);

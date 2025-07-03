@@ -171,7 +171,11 @@ export default function Scene() {
           cameraRef.current.zoom = 12;
         }
       } else {
-        cameraRef.current.zoom = 19;
+        if (window.innerWidth > 1920) {
+          cameraRef.current.zoom = 25;
+        } else {
+          cameraRef.current.zoom = 19;
+        }
       }
       cameraRef.current.updateProjectionMatrix();
     };
@@ -226,7 +230,7 @@ export default function Scene() {
         far={1000}
         position={[cameraPosition.x, cameraPosition.y, cameraPosition.z]}
         // zoom={24.5}
-        zoom={18}
+        zoom={19}
       />
       <group position={[0, 0, 0]}>
         <Model />

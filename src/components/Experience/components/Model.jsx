@@ -84,7 +84,7 @@ const Model = () => {
           child.material = windowMaterial;
         } else {
           child.material = bakedNeutralMaterial;
-          console.log(child.name);
+          // console.log(child.name);
           if (child.name === "Plane106") {
             child.position.y -= 1;
           }
