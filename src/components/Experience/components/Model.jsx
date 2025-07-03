@@ -22,14 +22,32 @@ const Model = () => {
   bakedNeutralTexture.flipY = false;
   bakedNeutralTexture.encoding = THREE.sRGBEncoding;
 
+  const bakedFirstStepTexture = useTexture("/textures/bakeFirstStep.jpg");
+  bakedFirstStepTexture.flipY = false;
+  bakedFirstStepTexture.encoding = THREE.sRGBEncoding;
+
+  const bakedSecondStepTexture = useTexture("/textures/bakeSecondStep.jpg");
+  bakedSecondStepTexture.flipY = false;
+  bakedSecondStepTexture.encoding = THREE.sRGBEncoding;
+
+  const bakedThirdStepTexture = useTexture("/textures/bakeThirdStep.jpg");
+  bakedThirdStepTexture.flipY = false;
+  bakedThirdStepTexture.encoding = THREE.sRGBEncoding;
+
   const bakedNeutralMaterial = useMemo(
     () =>
       new THREE.ShaderMaterial({
         uniforms: {
           uTime: new THREE.Uniform(0),
-          uProgress: new THREE.Uniform(0),
+          // uProgress: new THREE.Uniform(0),
+          uFirstProgress: new THREE.Uniform(0),
+          uSecondProgress: new THREE.Uniform(0),
+          uThirdProgress: new THREE.Uniform(0),
           uNeutralTexture: new THREE.Uniform(bakedNeutralTexture),
           uNoiseTexture: new THREE.Uniform(noiseTexture),
+          uBakedFirstStepTexture: new THREE.Uniform(bakedFirstStepTexture),
+          uBakedSecondtStepTexture: new THREE.Uniform(bakedSecondStepTexture),
+          uBakedThirdStepTexture: new THREE.Uniform(bakedThirdStepTexture),
         },
         transparent: true,
         vertexShader: jcastleVertexShader,
@@ -79,11 +97,25 @@ const Model = () => {
       (value, prevValue) => {
         // console.log(value);
 
-        if (value === 3) {
-          gsap.to(bakedNeutralMaterial.uniforms.uProgress, {
+        if (value === 1) {
+          gsap.to(bakedNeutralMaterial.uniforms.uFirstProgress, {
             value: 1,
-            duration: 1.75,
-            delay: 0.5,
+            duration: 1.7,
+            delay: 0.35,
+            ease: "hop",
+          });
+        } else if (value === 2) {
+          gsap.to(bakedNeutralMaterial.uniforms.uSecondProgress, {
+            value: 1,
+            duration: 1.7,
+            delay: 0.35,
+            ease: "hop",
+          });
+        } else if (value === 3) {
+          gsap.to(bakedNeutralMaterial.uniforms.uThirdProgress, {
+            value: 1,
+            duration: 1.7,
+            delay: 0.35,
             ease: "hop",
           });
         }

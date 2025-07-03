@@ -88,21 +88,21 @@ const HomePage = () => {
           gsap.to(finalButtonRef.current, {
             opacity: 1,
             duration: 1.75,
-            delay: 0.5,
+            delay: 2,
             ease: "hop",
             onComplete: () => {
               gsap.to(finalButtonRef.current, {
                 opacity: 0,
-                duration: 0.75,
+                duration: 1.5,
                 delay: 0,
                 ease: "hop",
                 onComplete: () => {
                   finalButtonRef.current.textContent =
-                    "Unfortunately the castle is sick";
+                    "Fortunately the castle is no longer sick";
                   gsap.to(finalButtonRef.current, {
                     opacity: 1,
                     duration: 1.75,
-                    delay: 0.5,
+                    delay: 3,
                     ease: "hop",
                   });
                 },
