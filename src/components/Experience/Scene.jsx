@@ -163,20 +163,22 @@ export default function Scene() {
     );
 
     const resize = () => {
-      // console.log("resize", window.innerWidth);
-      if (window.innerWidth < 1280) {
-        cameraRef.current.zoom = 14;
+      const baseWidth = 1280;
+      const baseHeight = 720;
+      const baseZoom = 13;
 
-        if (window.innerWidth < 768) {
-          cameraRef.current.zoom = 12;
-        }
-      } else {
-        if (window.innerWidth > 1920) {
-          cameraRef.current.zoom = 25;
-        } else {
-          cameraRef.current.zoom = 19;
-        }
-      }
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      const widthFactor = 0.007;
+      const heightFactor = 0.005;
+
+      const zoom =
+        baseZoom +
+        (width - baseWidth) * widthFactor +
+        (height - baseHeight) * heightFactor;
+
+      cameraRef.current.zoom = Math.max(5, zoom);
       cameraRef.current.updateProjectionMatrix();
     };
 
